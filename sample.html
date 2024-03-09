@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wikipedia Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        /* App Styles */
+        #app {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        select,
+        button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: #b74697;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #b74697;
+        }
+
+        select {
+            margin-left: 10px;
+            width: 150px; /* Adjust width as needed */
+        }
+
+        /* Language Section Styles */
+        .language-section {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .language-section h2,
+        .language-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .language-section p {
+            line-height: 1.6;
+        }
+
+        .language-section a {
+            display: block;
+            margin-top: 10px;
+            color: #b74697;
+            text-decoration: none;
+        }
+
+        .language-section a:hover {
+            text-decoration: underline;
+            color: #b74697;
+        }
+
+        /* Align the language select boxes */
+        .language-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .language-container select {
+            margin-right: 10px;
+            margin-bottom: 10px;
+            width: 150px; /* Adjust width as needed */
+        }
+
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Wikipedia Viewer</h1>
+        <form id="searchForm">
+            <input type="text" id="searchInput" placeholder="Enter search query">
+            <button type="submit">Search</button>
+            <div class="language-container">
+                <select id="languageSelect1"></select>
+                <select id="languageSelect2"></select>
+                <select id="languageSelect3"></select>
+                <select id="languageSelect4"></select>
+            </div>
+        </form>
+        <div id="selectedLanguages" class="language-section">
+            <!-- Content of the selected languages will be displayed here -->
+        </div>
+    </div>
+
+<script>
+     async function fetchLanguageData() {
+        try {
+            const response = await fetch('languages.json');
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error fetching language data:', error);
+            return [];
+        }
+    }
+
+    // Function to populate the dropdown list with languages
+    async function populateDropdown(selectId) {
+        const languages = await fetchLanguageData();
+        const select = document.getElementById(selectId);
+        languages.forEach(language => {
+            const option = document.createElement('option');
+            option.value = language.code;
+            option.textContent = language.name;
+            select.appendChild(option);
+        });
+    }
+
+    // Call the function to populate the dropdown lists
+    populateDropdown('languageSelect1');
+    populateDropdown('languageSelect2');
+    populateDropdown('languageSelect3');
+    populateDropdown('languageSelect4');
+
+    // Function to translate text using Google Translate API
+    async function translateText(text, targetLanguage) {
+        try {
+            const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=AIzaSyBngf17V-K0muxzhJ3yRETCmvh9C0sZ-oc`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    q: text,
+                    target: targetLanguage,
+                }),
+            });
+            const data = await response.json();
+            return data.data.translations[0].translatedText;
+        } catch (error) {
+            console.error('Error translating text:', error);
+            return 'Translation Error';
+        }
+    }
+
+    // Function to open a new window with a sharing dialog for Facebook
+    function shareOnFacebook(url) {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+    }
+
+    // Function to open a new window with a sharing dialog for Twitter
+    function shareOnTwitter(url, title) {
+        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`, '_blank');
+    }
+
+    // Function to open a new window with a sharing dialog for LinkedIn
+    function shareOnLinkedIn(url, title, summary) {
+        window.open(`https://www.linkedin.com/shareArticle?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(summary)}`, '_blank');
+    }
+
+    // Function to open a new window with a sharing dialog for Reddit
+    function shareOnReddit(url, title) {
+        window.open(`https://www.reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`, '_blank');
+    }
+
+    // Function to fetch Wikipedia pages and display translated content
+    async function fetchWikipediaPages(event) {
+        event.preventDefault();
+        const searchQuery = document.getElementById('searchInput').value.trim();
+        if (!searchQuery) {
+            alert('Please enter a search query');
+            return;
+        }
+        const languages = await fetchLanguageData();
+        const selectedLanguageCode1 = document.getElementById('languageSelect1').value;
+        const selectedLanguageCode2 = document.getElementById('languageSelect2').value;
+        const selectedLanguageCode3 = document.getElementById('languageSelect3').value;
+        const selectedLanguageCode4 = document.getElementById('languageSelect4').value;
+
+        // Fetch Wikipedia data in English
+        const englishResponse = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchQuery)}`);
+        const englishData = await englishResponse.json();
+
+        // Translate English content into the selected languages
+        const translation1 = await translateText(englishData.extract, selectedLanguageCode1);
+        const translation2 = await translateText(englishData.extract, selectedLanguageCode2);
+        const translation3 = await translateText(englishData.extract, selectedLanguageCode3);
+        const translation4 = await translateText(englishData.extract, selectedLanguageCode4);
+
+        // Display content in the selected languages
+        const selectedLanguagesSection = document.getElementById('selectedLanguages');
+        selectedLanguagesSection.innerHTML = `
+            <div class="language-section">
+                <h2>${languages.find(lang => lang.code === selectedLanguageCode1).name}</h2>
+                <h3>${englishData.title}</h3>
+                <p>${translation1}</p>
+                <a href="https://${selectedLanguageCode1}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}" target="_blank">Read more on Wikipedia</a>
+                <div>
+                    <button onclick="shareOnFacebook('https://${selectedLanguageCode1}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}')">Share on Facebook</button>
+                    <button onclick="shareOnTwitter('https://${selectedLanguageCode1}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}', '${englishData.title}')">Share on Twitter</button>
+                    <button onclick="shareOnLinkedIn('https://${selectedLanguageCode1}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}', '${englishData.title}', '${translation1}')">Share on LinkedIn</button>
+                    <button onclick="shareOnReddit('https://${selectedLanguageCode1}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}', '${englishData.title}')">Share on Reddit</button>
+                </div>
+            </div>
+            <div class="language-section">
+                <h2>${languages.find(lang => lang.code === selectedLanguageCode2).name}</h2>
+                <h3>${englishData.title}</h3>
+                <p>${translation2}</p>
+                <a href="https://${selectedLanguageCode2}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}" target="_blank">Read more on Wikipedia</a>
+                <div>
+                    <button onclick="shareOnFacebook('https://${selectedLanguageCode2}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}')">Share on Facebook</button>
+                    <button onclick="shareOnTwitter('https://${selectedLanguageCode2}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}', '${englishData.title}')">Share on Twitter</button>
+                    <button onclick="shareOnLinkedIn('https://${selectedLanguageCode2}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}', '${englishData.title}', '${translation2}')">Share on LinkedIn</button>
+                    <button onclick="shareOnReddit('https://${selectedLanguageCode2}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}', '${englishData.title}')">Share on Reddit</button>
+                </div>
+            </div>
+            <div class="language-section">
+                <h2>${languages.find(lang => lang.code === selectedLanguageCode3).name}</h2>
+                <h3>${englishData.title}</h3>
+                <p>${translation3}</p>
+                <a href="https://${selectedLanguageCode3}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}" target="_blank">Read more on Wikipedia</a>
+                <div>
+                    <button onclick="shareOnFacebook('https://${selectedLanguageCode3}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}')">Share on Facebook</button>
+                    <button onclick="shareOnTwitter('https://${selectedLanguageCode3}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}', '${englishData.title}')">Share on Twitter</button>
+                    <button onclick="shareOnLinkedIn('https://${selectedLanguageCode3}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}', '${englishData.title}', '${translation3}')">Share on LinkedIn</button>
+                    <button onclick="shareOnReddit('https://${selectedLanguageCode3}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}', '${englishData.title}')">Share on Reddit</button>
+                </div>
+            </div>
+            <div class="language-section">
+                <h2>${languages.find(lang => lang.code === selectedLanguageCode4).name}</h2>
+                <h3>${englishData.title}</h3>
+                <p>${translation4}</p>
+                <a href="https://${selectedLanguageCode4}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}" target="_blank">Read more on Wikipedia</a>
+                <div>
+                    <button onclick="shareOnFacebook('https://${selectedLanguageCode4}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}')">Share on Facebook</button>
+                    <button onclick="shareOnTwitter('https://${selectedLanguageCode4}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}', '${englishData.title}')">Share on Twitter</button>
+                    <button onclick="shareOnLinkedIn('https://${selectedLanguageCode4}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}', '${englishData.title}', '${translation4}')">Share on LinkedIn</button>
+                    <button onclick="shareOnReddit('https://${selectedLanguageCode4}.wikipedia.org/wiki/${encodeURIComponent(englishData.title)}', '${englishData.title}')">Share on Reddit</button>
+                </div>
+            </div>
+        `;
+    }
+
+    // Add event listener to the form
+    document.getElementById('searchForm').addEventListener('submit', fetchWikipediaPages);
+</script>
+</body>
+</html>

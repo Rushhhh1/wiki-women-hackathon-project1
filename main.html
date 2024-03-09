@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Selection</title>
+    <!-- Add Google Translate API script -->
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+
+<!-- Language Selector -->
+<div id="google_translate_element"></div>
+<div class="language-container">
+    <select id="languageSelect1"></select>  </div>
+
+<!-- Your website content goes here -->
+<h1 data-translate="welcome">Welcome to My Website!</h1>
+<p data-translate="content">This is the content of my website...</p>
+</form>
+<div id="selectedLanguages" class="language-section">
+    <!-- Content of the selected languages will be displayed here -->
+</div>
+</div>
+
+<script>
+// Function to initialize Google Translate Element
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en', // Default language
+        includedLanguages: 'en,es,fr', // List of supported languages
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+    }, 'google_translate_element');
+}
+
+// Fetch JSON file with language data
+fetch('languages.json')
+    .then(response => response.json()) // Parse the JSON response
+    .then(data => { // Handle the retrieved data
+        const languages = Object.keys(data); // Extract language keys from the JSON data
+        const select = document.createElement('select'); // Create a select element
+        select.addEventListener('change', (event) => { // Add change event listener to the select element
+            const language = event.target.value; // Get the selected language
+            document.documentElement.lang = language; // Set the HTML language attribute
+            const translateElements = document.querySelectorAll('[data-translate]'); // Select elements with data-translate attribute
+            translateElements.forEach(element => { // Iterate over each translate element
+                const key = element.dataset.translate; // Get the translation key
+                element.textContent = data[language][key]; // Set the text content to the translated text
+            });
+        });
+        languages.forEach(language => { // Iterate over each language
+            const option = document.createElement('option'); // Create an option element
+            option.value = language; // Set the value of the option to the language key
+            option.textContent = data[language]['languageName']; // Set the text content of the option to the language name
+            select.appendChild(option); // Append the option to the select element
+        });
+        document.body.prepend(select); // Prepend the select element to the body
+    })
+    .catch(error => console.error('Error loading language data:', error)); // Handle errors
+</script>
+
+</body>
+</html>

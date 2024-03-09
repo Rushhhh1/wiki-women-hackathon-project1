@@ -1,0 +1,202 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
+}
+.feature-box {
+    
+        width: 500px;
+        height: 500px;
+        background-color: brown;
+        color: yellow;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 1rem;
+      
+}
+body {
+    min-height: 100vh;
+    background: linear-gradient(#590000, #8B0000); /* Updated background gradient */
+}
+
+header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px 100px; /* Comma changed to space */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10000;
+}
+
+header .logo {
+    color: #FFD700; /* Updated logo color to gold */
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 2em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+header ul {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style-type: none; 
+}
+
+header ul li a {
+    font-size: 1.5em; /* Set font size to 1.5em */
+    color: #FFD700; /* Set color to gold */
+    margin-left: 20px; /* Moved margin here for consistency */
+    text-decoration: none; /* Removed underline */
+    transition: color 0.3s ease; /* Added smooth transition */
+    
+}
+
+header ul li a:hover,
+header ul li a.active {
+    color: #590000; /* Set color to maroon on hover/active */
+}
+header ul li a.home {
+    color:#FF5733  ; /* Set Home link color to orange */
+}
+
+section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    padding: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Added overflow hidden */
+}
+
+section::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to top, #FFD700, transparent); /* Updated gradient color */
+    z-index: 1000;
+}
+
+section img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+#text {
+    position: absolute;
+    color: #FFD700; /* Updated color to gold */
+    white-space: nowrap;
+    font-size: 7.5vw;
+    z-index: 9;
+    transform: translateY(100px);
+}
+
+#btn {
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 30px;
+    border-radius: 40px;
+    background: #590000; /* Updated background color */
+    color: #FFD700; /* Updated text color */
+    font-size: 1.5em;
+    z-index: 9;
+    transform: translateY(100px);
+    transition: background-color 0.3s ease, color 0.3s ease; /* Added smooth transition */
+}
+
+#btn:hover {
+    background: #FFD700; /* Updated background color on hover */
+    color: #590000; /* Updated text color on hover */
+}
+
+.sec {
+    position: relative;
+    padding: 100px;
+    background: #FFD700; /* Updated background color to gold */
+}
+
+.sec h2{
+    font-size: 5em;
+    letter-spacing: 10px;
+    font-family: monospace;
+    border-right: 5px solid ;
+    width: 100%;
+    white-space: nowrap ;
+    overflow: hidden;
+    animation:
+        typing 4s,
+        cursor .2s  step-end infinite alternate;
+}
+/* cursor blinking */
+@keyframes cursor{
+    50% { border-color: transparent;}
+}
+/* typing effect */
+@keyframes   typing{
+    from { width: 0} }
+
+.sec p {
+    font-size: 1.2em;
+    color: #590000; /* Updated text color to maroon */
+}
+
+#text.orange {
+    color: #FF5733 ; /* Set Wikipedia text color to orange */
+}
+.features {
+    display: flex;
+    flex-direction: row; /* Display features in a row */
+    justify-content: center;
+    align-items: center;
+}
+
+.feature {
+    
+    color: #FFD700;
+    margin: 10px;
+    border: 10px;
+    width: 300px;
+    height: 200px;
+    text-align: center;
+}
+
+.feature img {
+    width: 300px; 
+    height: 200px; 
+    border-style:solid  ;
+    border-color: black;
+    
+}
+
+.feature::after{
+    width: 300px;
+    height: 200px;
+    margin-top: -185px;
+    content:" ";
+    background-color: black;
+    display: block;
+}
+
+.features a{
+    color: white;
+    text-decoration: none;
+}

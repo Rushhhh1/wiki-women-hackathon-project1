@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallax Website</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <a href="" class="logo"></a>
+        <ul>
+            <li><a href="sample.html" class="home active">Home</a></li>
+            <li><a href="https://forms.office.com/Pages/DesignPageV2.aspx?prevorigin=Marketing&origin=NeoPortalPage&subpage=design&id=34pbca8MvkaunwgLBUn-Y1BZPhTlkmpDlsDtgBvDuVVURDNCQ0MwUTU0UzI3Wk5ISzI1U1E5UE5XMC4u" class="home active">Feedback</a></li>
+
+            
+        </ul>
+        
+    </header>
+    <section>
+        <img src="behind.jpg" id="behind">
+        <h2 id="text" class="orange">Wikipedia</h2>
+
+        <a href="#sec" id="btn">Explore</a>
+        <img src="front.jpg" id="front">
+    </section>
+    <div class="sec" id="sec">
+        <h2 id="Title">Our Features Include </h2>
+        <p></p>
+        <div class="features">
+            <div class="feature">
+                <img src="feature1.jpg" alt="Feature 1" class="f-img">
+                <a href="">Multi-Language Support</a>
+            </div>
+            <div class="feature">
+                <img src="feature2.jpg" alt="Feature 2" class="f-img">
+                <a href="">Real Time Translation</a>
+            </div>
+            <div class="feature">
+                <img src="feature3.jpg" alt="Feature 3" class="f-img">
+                <a href="">User Feedback Integration</a>
+            </div>
+            <div class="feature">
+                <img src="feature4.jpg" alt="Feature 4" class="f-img">
+                <a href="">Shareability Feature</a>
+            </div>
+    </div>
+    <script>
+        let behind = document.getElementById('behind');
+        let text = document.getElementById('text');
+        let btn = document.getElementById('btn');
+        let front = document.getElementById('front');
+
+        window.addEventListener('scroll', function(){
+            let value = window.scrollY;
+            behind.style.top = value * 0.5 + 'px';
+            text.style.left = value * 2 + 'px';
+            btn.style.marginTop = value * 1.5 + 'px';
+            front.style.top = -value * 0.5 + 'px';
+        });
+        const title = document.getElementById('title');
+        const features = document.querySelectorAll('.feature');
+        const delay = 200; // Delay in milliseconds between each letter
+
+        // Function to animate text letter by letter
+        function animateText(text, index) {
+            if (index < text.length) {
+                features.forEach(feature => {
+                    feature.style.display = 'block';
+                });
+                title.innerHTML += text.charAt(index);
+                setTimeout(() => {
+                    animateText(text, index + 1);
+                }, delay);
+            }
+        }
+
+        // Animate the title letter by letter
+        animateText(title.innerHTML, 0);
+    </script>
+</body>
+</html>
